@@ -12,15 +12,19 @@ def view_courses():
     colleges = Colleges.query_all()
     colleges = [(college['college_code'],college['college_name']) for college in colleges]
     session['college_choices'] = colleges
+    
     query = request.args.get('query','')
     college_filter = request.args.get('college-filter')
     if query.strip() == '':
-        courses = Courses.query_all()
+        if college_filter == 'all' or not college_filter:
+            courses = Courses.query_all()
+        else:
+            courses = Courses.query_filter(college_code=college_filter)
     else:
-        courses = Courses.query_filter(all=query)
-
-    if college_filter != 'None' and college_filter:
-        courses = list(filter(lambda x: x['college_code'] == college_filter, courses))
+        if college_filter == 'all':
+            courses = Courses.query_filter(all=query)
+        else:
+            courses = Courses.query_filter(all=query, college_code=college_filter)
 
     return render_template('courses/courses.html', courses=courses, query=query, college_choices=colleges, college_filter=college_filter)
 

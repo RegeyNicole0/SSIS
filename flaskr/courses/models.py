@@ -60,13 +60,15 @@ class Courses():
                 sql = base_sql+f" where courses.course_code='{course_code}'"
         else:
             if college_code:
-                sql = base_sql+ f" where courses.college_code LIKE '%{college_code}%'"
+                sql = base_sql+ f" where courses.college_code = '{college_code}'"
             if course_name:
                 sql = base_sql + f" where courses.course_name LIKE '%{course_name}%'"
             if course_code:
                 sql = base_sql + f" where courses.course_code LIKE '%{course_code}%'"
             if all:
                 sql = base_sql + f" where courses.course_code LIKE '%{all}%' or courses.course_name LIKE '%{all}%'"
+            if all and college_code:
+                sql = base_sql + f" where courses.course_code LIKE '%{all}%' or courses.course_name LIKE '%{all}%' AND courses.college_code = '{college_code}'"
 
         cursor.execute(sql)
         try:

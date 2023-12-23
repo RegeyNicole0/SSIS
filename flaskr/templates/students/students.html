@@ -7,20 +7,39 @@
 
 <a type="button" class="btn btn-success" href="/students/add">Add Students + </a>
 <a type="button" href="/students"><i class="bi bi-arrow-clockwise" style="height: 100px; width:100px;"></i></a>
-<!-- <nav class="navbar bg-body-tertiary">
+<nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
-    <form class="d-flex " role="search" action="/courses" method="GET">
+    <form class="d-flex " role="search" action="/students" method="GET">
       <button class="btn btn-outline-success me-2" type="submit">Search</button>
-      <input class="form-control me-2" type="search" placeholder="Search Code or Name" aria-label="Search" name="query" value="{{query}}">
+      <input class="form-control me-2" type="search" placeholder="Search ID No. or Name" aria-label="Search" name="query" value="{{query}}">
       <select class="form-select" aria-label="Default select example" onchange="" name="college-filter">
-        <option value="None" {% if college_fitler == 'None' %} selected {% endif %}>All Colleges</option>
+        <option value="None" {% if college_filter == 'None' %} selected {% endif %}>All Colleges</option>
         {% for choice in college_choices%}
           <option value="{{choice[0]}}" {% if choice[0] == college_filter %}selected{%endif%}>{{choice[1]}}</option>
         {%endfor%}
       </select>
+      <select class="form-select" aria-label="Default select example" onchange="" name="course-filter">
+        <option value="None" {% if college_filter == 'None' %} selected {% endif %}>All Courses</option>
+        {% for choice in course_choices%}
+          <option value="{{choice[0]}}" {% if choice[0] == course_filter %}selected{%endif%}>{{choice[1]}}</option>
+        {%endfor%}
+      </select>
+      <select class="form-select" aria-label="Default select example" onchange="" name="gender-filter">
+        <option value="None" {% if gender_filter == 'None' %} selected {% endif %}>All Genders</option>
+        <option value="Male" {% if gender_filter == 'Male' %} selected {% endif %}>Male</option>
+        <option value="Female" {% if gender_filter == 'Female' %} selected {% endif %}>Female</option>
+      </select>
+      <select class="form-select" aria-label="Default select example" onchange="" name="year-filter">
+        <option value="None" {% if year_filter == 'None' %} selected {% endif %}>All Levels</option>
+        <option value="1" {% if year_filter == '1' %} selected {% endif %}>Year 1</option>
+        <option value="2" {% if year_filter == '2' %} selected {% endif %}>Year 2</option>
+        <option value="3" {% if year_filter == '3' %} selected {% endif %}>Year 3</option>
+        <option value="4" {% if year_filter == '4' %} selected {% endif %}>Year 4</option>
+        <option value="5" {% if year_filter == '5' %} selected {% endif %}>Year 5</option>
+      </select>
     </form>
   </div>
-</nav> -->
+</nav>
 {% if students|length < 1 %}
 <h1>No Students Found</h1>
 {% else %}

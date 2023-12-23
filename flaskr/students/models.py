@@ -53,50 +53,31 @@ class Students():
 
 
     @classmethod
-    def query_filter(cls, gender=None, id=None, name=None, course=None, all=None, exact_match=False):
+    def query_filter(cls, gender=None, id=None, name=None, course=None, all=None, exact_match=False, year_level = None):
         cursor = mysql.connection.cursor()
-        sql = ''
-        # if not gender:
+        sql = cls.base_select
+        conditions = []
         if exact_match:
             if name:
-                sql = cls.base_select+f" WHERE MATCH (students.last_name, students.first_name) AGAINST('{name}') \
+                sql = sql +f" WHERE MATCH (students.last_name, students.first_name) AGAINST('{name}') \
                                         or students.last_name LIKE '%{name}%' or students.first_name LIKE '%{name}%'"
             if id:
-                sql = cls.base_select+f" WHERE students.id='{id}'"
+                sql = sql +f" WHERE students.id='{id}'"
         else:
             if course:
-                sql = cls.base_select+ f" WHERE students.course_code LIKE '%{course}%'"
-            if name:
-                sep = name.split(' ')
-                if len(sep) > 1:
-                    sql = cls.base_select+f" WHERE MATCH (students.last_name, students.first_name) AGAINST('{name}')"
-                else:
-                    sql = cls.base_select+f" WHERE students.last_name LIKE '%{name}%'\
-                                             or students.first_name LIKE '%{name}%'"
-
-            if id:
-                sql = cls.base_select+f" WHERE students.id LIKE '%{id}%'"
+                conditions.append(f"students.course_code = '{course}'")
+            if year_level:
+                conditions.append(f"students.year_level = '{year_level}'")
+            if gender:
+                conditions.append(f"students.gender = '{gender}'")
             if all:
-                sep = all.split(' ')
-                if len(sep) > 1:
-                    sql = cls.base_select + f" WHERE students.course_code LIKE '%{all}%'\
-                                            or courses.course_name LIKE '%{all}%'\
-                                            or students.id LIKE '%{all}%'or MATCH\
-                                            (students.last_name, students.first_name) AGAINST('{all}')"
-                else:
-                    sql = cls.base_select + f" WHERE students.course_code LIKE '%{all}%'\
-                                            or courses.course_name LIKE '%{all}%'\
-                                            or students.id LIKE '%{all}%' or students.last_name\
-                                             LIKE '%{all}%' or students.first_name LIKE '%{all}%'"
-
+                conditions.append(f"(students.id LIKE '%{all}%' or MATCH(students.last_name, students.first_name) AGAINST('{all}'))")
+        print(conditions)
+        if conditions:
+            sql += " WHERE " + " AND ".join(conditions)
+            print(sql)
         cursor.execute(sql)
         result = Students.result_zip(cursor.description,cursor.fetchall())
-        filtered_result = []
-        if gender != 'all':
-            for row in result:
-                if row['gender'].lower() == gender:
-                    filtered_result.append(row)
-            return filtered_result
         return result
 
     @classmethod

@@ -9,15 +9,34 @@ from flaskr import mysql
 
 @students_view.route('/students', methods=['GET','POST'])
 def view_students():
-    students = Students.query_all()
-    return render_template('students/students.html', students=students)
+    courses = Courses.query_all()
+    courses = [(course['course_code'],course['course_name']) for course in courses]
+
+    colleges = Colleges.query_all()
+    colleges = [(college['college_code'],college['college_name']) for college in colleges]
+
+    session['college_choices'] = colleges
+    session['course_choices'] = courses
+
+    query = request.args.get('query') if request.args.get('query') != 'None' else None
+    college_filter = request.args.get('college-filter') if request.args.get('college-filter') != 'None' else None
+    course_filter = request.args.get('course-filter') if request.args.get('course-filter') != 'None' else None
+    gender_filter = request.args.get('gender-filter') if request.args.get('gender-filter') != 'None' else None
+    year_filter = request.args.get('year-filter')  if request.args.get('year-filter') != 'None' else None
+
+    students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter)
+    if (query and query.strip() != '') or query == None:
+        students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter)
+
+    query = '' if not query else query
+    return render_template('students/students.html', students=students, course_choices=courses, college_choices=colleges, college_filter=college_filter, course_filter=course_filter, gender_filter=gender_filter, year_filter=year_filter, query=query)
 
 @students_view.route('/students/add', methods=['GET','POST'])
 def add_student():  
     form = AddStudent(request.form)
     courses = Courses.query_all()
     courses = [(course['course_code'],course['course_name']) for course in courses]
-    session['college_choices'] = courses
+    session['course_choices'] = courses
     form.course.choices = courses
     if request.method == 'POST':
         # validate form

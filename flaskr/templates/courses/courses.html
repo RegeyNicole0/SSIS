@@ -13,7 +13,7 @@
       <button class="btn btn-outline-success me-2" type="submit">Search</button>
       <input class="form-control me-2" type="search" placeholder="Search Code or Name" aria-label="Search" name="query" value="{{query}}">
       <select class="form-select" aria-label="Default select example" onchange="" name="college-filter">
-        <option value="None" {% if college_fitler == 'None' %} selected {% endif %}>All Colleges</option>
+        <option value="all" {% if college_fitler == 'None' %} selected {% endif %}>All Colleges</option>
         {% for choice in college_choices%}
           <option value="{{choice[0]}}" {% if choice[0] == college_filter %}selected{%endif%}>{{choice[1]}}</option>
         {%endfor%}
