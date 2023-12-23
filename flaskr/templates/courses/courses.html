@@ -7,18 +7,26 @@
 
 <a type="button" class="btn btn-success" href="/courses/add">Add Courses + </a>
 <a type="button" href="/courses"><i class="bi bi-arrow-clockwise" style="height: 100px; width:100px;"></i></a>
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <form class="d-flex " role="search" action="/courses" method="GET">
+      <button class="btn btn-outline-success me-2" type="submit">Search</button>
+      <input class="form-control me-2" type="search" placeholder="Search Code or Name" aria-label="Search" name="query" value="{{query}}">
+      <select class="form-select" aria-label="Default select example" onchange="" name="college-filter">
+        <option value="None" {% if college_fitler == 'None' %} selected {% endif %}>All</option>
+        {% for choice in college_choices%}
+          <option value="{{choice[0]}}" {% if choice[0] == college_filter %}selected{%endif%}>{{choice[1]}}</option>
+        {%endfor%}
+      </select>
+      <button class="btn btn-sm btn-success ms-2" type="submit">Filter</button>
+    </form>
+  </div>
+</nav>
 {% if courses|length < 1 %}
 <h1>No Courses Found</h1>
 {% else %}
 
-<nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-    <form class="d-flex" role="search" action="/courses" method="GET">
-      <input class="form-control me-2" type="search" placeholder="Search Code or Name" aria-label="Search" name="query" value="{{query}}">
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
-  </div>
-</nav>
+
 
 <table class="table table-hover ">
   <thead>

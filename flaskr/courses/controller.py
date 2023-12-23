@@ -7,12 +7,23 @@ import json
 from flaskr import mysql
 
 @courses_view.route('/courses', methods=['GET','POST'])
-def index():
+def view_courses():
     courses = Courses.query_all()
     colleges = Colleges.query_all()
     colleges = [(college['college_code'],college['college_name']) for college in colleges]
     session['college_choices'] = colleges
-    return render_template('courses/courses.html', courses=courses)
+    query = request.args.get('query','')
+    college_filter = request.args.get('college-filter')
+
+    if query.strip() == '':
+        courses = Courses.query_all()
+    else:
+        courses = Courses.query_filter(all=query)
+
+    if college_filter != 'None':
+        courses = list(filter(lambda x: x['college_code'] == college_filter, courses))
+    print(colleges)
+    return render_template('courses/courses.html', courses=courses, query=query, college_choices=colleges, college_filter=college_filter)
 
 @courses_view.route('/courses/add', methods=['GET','POST'])
 def add_course():  

@@ -6,7 +6,7 @@ import json
 from flaskr import mysql
 
 
-@colleges_view.route('/', methods=['GET','POST'])
+@colleges_view.route('/', methods=['GET'])
 def index():
     return redirect('/colleges')
 
@@ -33,6 +33,7 @@ def add_college():
 
         college_code = form.college_code.data.upper()
         college_name = form.college_name.data.title()
+        
         # validate if college already exists
         code_exists = Colleges.query_get(college_code)
         invalid_input = False

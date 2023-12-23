@@ -48,12 +48,12 @@ class Courses():
 
     @classmethod
     def query_filter(cls, course_code=None, course_name=None, 
-                college_code=None, all=None, search_pattern=False):
+                college_code=None, all=None, search_exact=False):
         cursor = mysql.connection.cursor()
         base_sql = 'SELECT courses.course_code, courses.course_name, courses.college_code, \
                 colleges.college_name FROM courses LEFT JOIN colleges ON courses.college_code = colleges.college_code'
         sql = ''
-        if not search_pattern:
+        if search_exact:
             if course_name:
                 sql = base_sql+f" where courses.course_name='{course_name}'"
             if course_code:
