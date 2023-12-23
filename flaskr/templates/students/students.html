@@ -12,18 +12,21 @@
     <form class="d-flex " role="search" action="/students" method="GET">
       <button class="btn btn-outline-success me-2" type="submit">Search</button>
       <input class="form-control me-2" type="search" placeholder="Search ID No. or Name" aria-label="Search" name="query" value="{{query}}">
-      <select class="form-select" aria-label="Default select example" onchange="" name="college-filter">
+      
+      <select class="form-select" aria-label="Default select example" onchange="" name="college-filter" id="college-filter">
         <option value="None" {% if college_filter == 'None' %} selected {% endif %}>All Colleges</option>
         {% for choice in college_choices%}
           <option value="{{choice[0]}}" {% if choice[0] == college_filter %}selected{%endif%}>{{choice[1]}}</option>
         {%endfor%}
       </select>
-      <select class="form-select" aria-label="Default select example" onchange="" name="course-filter">
+
+      <select class="form-select" aria-label="Default select example" onchange="" name="course-filter" id="course-filter">
         <option value="None" {% if college_filter == 'None' %} selected {% endif %}>All Courses</option>
         {% for choice in course_choices%}
           <option value="{{choice[0]}}" {% if choice[0] == course_filter %}selected{%endif%}>{{choice[1]}}</option>
         {%endfor%}
       </select>
+
       <select class="form-select" aria-label="Default select example" onchange="" name="gender-filter">
         <option value="None" {% if gender_filter == 'None' %} selected {% endif %}>All Genders</option>
         <option value="Male" {% if gender_filter == 'Male' %} selected {% endif %}>Male</option>
@@ -65,7 +68,13 @@
         <td>{{student.profile_pic}}</td>
         <td>{{student.id}}</td>
         <td>{{student.last_name}}, {{student.first_name}}</td>
-        <td>{{student.course_name}}</td>
+        <td>
+          {% if not student.course_name %}
+          <p class="text-danger fw-bold">Course Removed</p>
+          {% else%}
+          {{student.course_name}}
+          {%endif%}
+        </td>
         <td>{{student.gender}}</td>
         <td>{{student.year_level}}</td>
         <td >
@@ -100,6 +109,50 @@
   </tbody>
 </table>
 {% endif %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script type="text/javascript">
+  let college_codes = {{college_codes|safe}}
+  let course_codes = {{course_choices | map(attribute=0) | list | safe}}
+  let course_names = {{course_choices | map(attribute=1) | list | safe}}
+  let course_colleges = {{course_choices | map(attribute=2) | list | safe}}
+
+  
+  const updateCourses = () => {
+    let selected_college_code = $('#college-filter').val()
+    let selected_course_code = $('#course-filter').val()
+
+    var filtered_courses = course_codes.map((val, idx) => {
+      if ((selected_college_code == 'None') || (selected_college_code == undefined)){
+        return {code:course_codes[idx], name:course_names[idx]}
+      } else if (selected_college_code == course_colleges[idx]){
+        return {code:course_codes[idx], name:course_names[idx]}
+      }
+    })
+
+    filtered_courses = filtered_courses.filter((val) => val != undefined)
+    if ((selected_college_code == 'None') || (selected_college_code == undefined)) {
+      filtered_courses = [{code:'None', name:'All Courses'}].concat(filtered_courses)
+    }
+  
+    $('#course-filter').empty();
+    for (let i = 0; i < filtered_courses.length; i++) {
+      if (filtered_courses[i].code == selected_course_code ) {
+        $('#course-filter').append('<option selected value="' + filtered_courses[i].code + '">' + filtered_courses[i].name + '</option>');
+      } else {
+        $('#course-filter').append('<option value="' + filtered_courses[i].code + '">' + filtered_courses[i].name + '</option>');
+      }
+    }
+  }
+
+  $('document').ready(function () {
+    updateCourses()
+    $('#college-filter').on('change',function() {
+      updateCourses()
+    })
+
+  })
+</script>
 
 
 {%endblock%}
+

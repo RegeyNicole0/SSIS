@@ -42,7 +42,13 @@
       <tr >
         <td>{{course.course_code}}</td>
         <td>{{course.course_name}}</td>
-        <td>{{course.college_name}}</td>
+        <td>
+          {% if not course.college_name%}
+          <p class="text-danger fw-bold">College Removed</p>
+          {%else%}
+          {{course.college_name}}
+          {%endif%}
+        </td>
         <td >
           <a type="button" class="btn btn-warning btn-sm" href="/courses/edit/{{course.course_code}}">Edit</a>
           <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{course.course_code}}">Delete</button>

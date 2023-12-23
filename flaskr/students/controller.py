@@ -10,10 +10,11 @@ from flaskr import mysql
 @students_view.route('/students', methods=['GET','POST'])
 def view_students():
     courses = Courses.query_all()
-    courses = [(course['course_code'],course['course_name']) for course in courses]
+    courses = [(course['course_code'],course['course_name'], course['college_code']) for course in courses]
 
-    colleges = Colleges.query_all()
-    colleges = [(college['college_code'],college['college_name']) for college in colleges]
+    colleges_query = Colleges.query_all()
+    colleges = [(college['college_code'],college['college_name']) for college in colleges_query]
+    college_codes = [(college['college_code']) for college in colleges_query]
 
     session['college_choices'] = colleges
     session['course_choices'] = courses
@@ -29,7 +30,7 @@ def view_students():
         students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter)
 
     query = '' if not query else query
-    return render_template('students/students.html', students=students, course_choices=courses, college_choices=colleges, college_filter=college_filter, course_filter=course_filter, gender_filter=gender_filter, year_filter=year_filter, query=query)
+    return render_template('students/students.html', students=students, course_choices=courses, college_choices=colleges, college_filter=college_filter, course_filter=course_filter, gender_filter=gender_filter, year_filter=year_filter, query=query, college_codes=college_codes)
 
 @students_view.route('/students/add', methods=['GET','POST'])
 def add_student():  
@@ -60,7 +61,7 @@ def add_student():
 
         if invalid_input == True:
             flash(f'Invalid inputs, please check the fields.', category='error')
-            return render_template('courses/add-courses.html', form=form)
+            return render_template('students/add-students.html', form=form)
 
         
         new_student = Students(id=id_number,first_name=first_name, last_name=last_name, year=year_level, profile_pic=profile_pic,course_code=course_code, gender=gender)
