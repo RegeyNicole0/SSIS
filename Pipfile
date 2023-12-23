@@ -4,12 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
 python-dotenv = "*"
 flask-wtf = "*"
+mysql-connector-python = "*"
 flask-mysql-connector = "*"
+flask = "==2.2.2"
+werkzeug = "==2.2.2"
+wtforms = "*"
+wtforms-validators = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.9"

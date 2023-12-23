@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %} Colleges {% endblock %}
+
+{%block content %}
+
+<a type="button" class="btn btn-success" href="/colleges/add">Add College + </a>
+{% if colleges|length < 1 %}
+<h1>No Colleges Found</h1>
+{% else %}
+<table class="table table-hover ">
+  <thead>
+    <tr>
+      <th scope="col">College Code</th>
+      <th scope="col">College Name</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for college in colleges %}
+      <tr >
+        <td>{{college.college_code}}</td>
+        <td>{{college.college_name}}</td>
+        <td >
+          <a type="button" class="btn btn-warning btn-sm" href="/colleges/edit/{{college.college_code}}">Edit</a>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{college.college_code}}">Delete</button>
+        </td>
+      </tr>
+
+      <!-- CONFIRM DELETE MODAL -->
+      <div class="modal" tabindex="-1" id="deleteModal{{college.college_code}}">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Confirm Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Delete {{college.college_code}} - {{college.college_name}}?</p>
+            </div>
+            <div class="modal-footer">
+              <form action="/colleges/delete" method="post">
+                <input type="hidden" value="{{college.college_code}}" name="college-code">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+
+{%endblock%}

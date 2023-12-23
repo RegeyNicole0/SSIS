@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %} Colleges {% endblock %}
+
+{%block content %}
+<form action="/colleges/add" method="POST">
+  {{form.csrf_token}}
+  <div class="mb-3">
+    {{form.college_code.label(class_="form-label")}}
+    {{form.college_code(class_="form-control")}}
+    {% if form.college_code.errors %}
+    <ul class="errors form-text text-danger fw-bold">
+    {% for error in form.college_code.errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+  </div>
+  <div class="mb-3">
+    {{form.college_name.label(class_="form-label")}}
+    {{form.college_name(class_="form-control")}}
+    {% if form.college_name.errors %}
+    <ul class="errors form-text text-danger fw-bold">
+    {% for error in form.college_name.errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{%endblock%}
