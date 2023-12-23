@@ -5,9 +5,9 @@
 {%block content %}
 
 
-<a type="button" class="btn btn-success" href="/courses/add">Add Courses + </a>
-<a type="button" href="/courses"><i class="bi bi-arrow-clockwise" style="height: 100px; width:100px;"></i></a>
-<nav class="navbar bg-body-tertiary">
+<a type="button" class="btn btn-success" href="/students/add">Add Students + </a>
+<a type="button" href="/students"><i class="bi bi-arrow-clockwise" style="height: 100px; width:100px;"></i></a>
+<!-- <nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
     <form class="d-flex " role="search" action="/courses" method="GET">
       <button class="btn btn-outline-success me-2" type="submit">Search</button>
@@ -20,9 +20,9 @@
       </select>
     </form>
   </div>
-</nav>
-{% if courses|length < 1 %}
-<h1>No Courses Found</h1>
+</nav> -->
+{% if students|length < 1 %}
+<h1>No Students Found</h1>
 {% else %}
 
 
@@ -30,27 +30,33 @@
 <table class="table table-hover ">
   <thead>
     <tr>
-      <th scope="col">Course Code</th>
-      <th scope="col">Course Name</th>
-      <th scope="col">College</th>
+      <th scope="col">Photo</th>
+      <th scope="col">Id Number</th>
+      <th scope="col">Name</th>
+      <th scope="col">Course</th>
+      <th scope="col">Gender</th>
+      <th scope="col">Year</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
 
-    {% for course in courses %}
+    {% for student in students %}
       <tr >
-        <td>{{course.course_code}}</td>
-        <td>{{course.course_name}}</td>
-        <td>{{course.college_name}}</td>
+        <td>{{student.profile_pic}}</td>
+        <td>{{student.id}}</td>
+        <td>{{student.last_name}}, {{student.first_name}}</td>
+        <td>{{student.course_name}}</td>
+        <td>{{student.gender}}</td>
+        <td>{{student.year_level}}</td>
         <td >
-          <a type="button" class="btn btn-warning btn-sm" href="/courses/edit/{{course.course_code}}">Edit</a>
-          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{course.course_code}}">Delete</button>
+          <a type="button" class="btn btn-warning btn-sm" href="/students/edit/{{student.id}}">Edit</a>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{student.id}}">Delete</button>
         </td>
       </tr>
 
       <!-- CONFIRM DELETE MODAL -->
-      <div class="modal" tabindex="-1" id="deleteModal{{course.course_code}}">
+      <div class="modal" tabindex="-1" id="deleteModal{{student.id}}">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -58,11 +64,11 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Delete {{course.course_code}} - {{course.course_name}}?</p>
+              <p>Delete {{student.id}} - {{student.last_name}}, {{student.first_name}}?</p>
             </div>
             <div class="modal-footer">
-              <form action="/courses/delete" method="post">
-                <input type="hidden" value="{{course.course_code}}" name="course-code">
+              <form action="/students/delete" method="post">
+                <input type="hidden" value="{{student.id}}" name="student-id">
                 <button type="submit" class="btn btn-danger">Delete</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </form>

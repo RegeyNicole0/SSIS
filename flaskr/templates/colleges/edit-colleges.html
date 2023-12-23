@@ -4,7 +4,7 @@
 
 {%block content %}
 <h1>Edit College</h1>
-<form action="/colleges/edit/{{edit_college_code}}" method="POST">
+<form action="/colleges/edit/{{college.college_code}}" method="POST">
   {{form.csrf_token}}
   <div class="mb-3">
     <div>

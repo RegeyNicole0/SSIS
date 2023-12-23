@@ -26,17 +26,14 @@ def colleges():
 def add_college():  
     form = AddCollege(request.form)
     if request.method == 'POST':
-        # validate form
-        if not form.validate():
-            flash(f"Invalid inputs, please check the fields.", category='error')
-            return render_template('colleges/add-colleges.html', form=form)
-
         college_code = form.college_code.data.upper()
         college_name = form.college_name.data.title()
         
         # validate if college already exists
         code_exists = Colleges.query_get(college_code)
         invalid_input = False
+        form_validated = form.validate()
+        if not form_validated: invalid_input = True
         if code_exists:
             form.college_code.errors = ['This code is already in use.']
             invalid_input = True
@@ -77,10 +74,6 @@ def edit_college(id):
     college = Colleges.query_get(id)
     form = AddCollege()
     if request.method == 'POST':
-        if not form.validate():
-            flash(f"Invalid inputs, please check the fields.", category='error')
-            return render_template('colleges/edit-colleges.html', form=form, edit_college_code=college['college_code'], edit_college_name=college['college_name'])
-
         target_college_code = college['college_code']
         target_college_name = college['college_name']
         new_college_code = form.college_code.data.upper()
@@ -89,6 +82,8 @@ def edit_college(id):
         # validate if college already exists
         code_exists = Colleges.query_get(new_college_code)
         invalid_input = False
+        form_validated = form.validate()
+        if not form_validated: invalid_input = True
         if code_exists and code_exists['college_code'] != target_college_code:
             form.college_code.errors = ['This code is already in use by another college.']
             invalid_input = True
@@ -101,7 +96,7 @@ def edit_college(id):
         
         if invalid_input == True:
             flash(f'Invalid inputs, please check the fields.', category='error')
-            return render_template('colleges/edit-colleges.html', form=form, edit_college_code=college['college_code'], edit_college_name=college['college_name'])
+            return render_template('colleges/edit-colleges.html', form=form, college=college)
         
         Colleges.update(old_code=target_college_code, new_code=new_college_code, new_name=new_college_name)
         mysql.connection.commit()

@@ -7,10 +7,6 @@
 
 <a type="button" class="btn btn-success" href="/colleges/add">Add College + </a>
 <a type="button" href="/colleges"><i class="bi bi-arrow-clockwise" style="height: 100px; width:100px;"></i></a>
-{% if colleges|length < 1 %}
-<h1>No Colleges Found</h1>
-{% else %}
-
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
     <form class="d-flex" role="search" action="/colleges" method="GET">
@@ -19,6 +15,11 @@
     </form>
   </div>
 </nav>
+{% if colleges|length < 1 %}
+<h1>No Colleges Found</h1>
+{% else %}
+
+
 
 <table class="table table-hover ">
   <thead>

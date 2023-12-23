@@ -14,16 +14,16 @@ def view_courses():
     session['college_choices'] = colleges
     query = request.args.get('query','')
     college_filter = request.args.get('college-filter')
-
     if query.strip() == '':
         courses = Courses.query_all()
     else:
         courses = Courses.query_filter(all=query)
 
-    if college_filter != 'None':
+    if college_filter != 'None' and college_filter:
         courses = list(filter(lambda x: x['college_code'] == college_filter, courses))
-    print(colleges)
+
     return render_template('courses/courses.html', courses=courses, query=query, college_choices=colleges, college_filter=college_filter)
+
 
 @courses_view.route('/courses/add', methods=['GET','POST'])
 def add_course():  
@@ -33,10 +33,6 @@ def add_course():
     session['college_choices'] = colleges
     form.college.choices = colleges
     if request.method == 'POST':
-        # validate form
-        if not form.validate():
-            flash(f"Invalid inputs, please check the fields.", category='error')
-            return render_template('courses/add-courses.html', form=form)
 
         course_code = form.course_code.data.upper()
         course_name = form.course_name.data.title()
@@ -44,6 +40,10 @@ def add_course():
         # validate if course code already exists
         code_exists = Courses.query_get(course_code)
         invalid_input = False
+        form_validated = form.validate()
+
+        if not form_validated: invalid_input=True
+
         if code_exists:
             form.course_code.errors = ['This code is already in use.']
             invalid_input = True
@@ -58,7 +58,6 @@ def add_course():
             flash(f'Invalid inputs, please check the fields.', category='error')
             return render_template('courses/add-courses.html', form=form)
 
-        
         new_course = Courses(course_name=course_name, course_code=course_code, college_code=college_code)
 
         new_course.add()
@@ -66,6 +65,7 @@ def add_course():
         flash(f'Successfully added "{new_course.course_code} - {new_course.course_name}"', category='success')
         return redirect('/courses')
     return render_template('courses/add-courses.html', form=form)
+
 
 @courses_view.route('/courses/delete', methods=['POST'])
 def delete_course():
@@ -77,6 +77,7 @@ def delete_course():
         flash(f'Successfully Deleted {course["course_code"]} - {course["course_name"]}', category='success')
         return redirect('/courses')
     
+
 @courses_view.route('/courses/edit/<id>', methods=['GET','POST'])
 def edit_course(id):
     course = Courses.query_get(id)
@@ -88,9 +89,6 @@ def edit_course(id):
     college_origin = Colleges.query_get(course['college_code'])
 
     if request.method == 'POST':
-        if not form.validate():
-            flash(f"Invalid inputs, please check the fields.", category='error')
-            return render_template('courses/edit-courses.html', form=form, course=course, college_origin=college_origin)
 
         target_course_code = course['course_code']
         target_course_name = course['course_name']
@@ -100,7 +98,10 @@ def edit_course(id):
 
         # validate if course already exists
         code_exists = Courses.query_get(new_course_code)
+
         invalid_input = False
+        form_validated = form.validate()
+        if not form_validated: invalid_input = True
         if code_exists and code_exists['course_code'] != target_course_code:
             form.course_code.errors = ['This code is already in use by another course.']
             invalid_input = True

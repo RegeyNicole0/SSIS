@@ -31,6 +31,19 @@ def create_db():
         UNIQUE(course_name),
         FOREIGN KEY(college_code) REFERENCES colleges(college_code) ON DELETE SET NULL ON UPDATE CASCADE
         );
-                     
-    """
-    )
+          
+        CREATE TABLE students (
+        id 				CHAR(10) NOT NULL,
+        first_name 		VARCHAR(50) NOT NULL,
+        last_name 		VARCHAR(50) NOT NULL,
+        year_level 		INT NOT NULL,
+        gender 			CHAR(6) NOT NULL,
+        profile_pic 	VARCHAR(240),
+        course_code 	VARCHAR(20),
+        PRIMARY KEY(id),
+        FOREIGN KEY(course_code) REFERENCES courses(course_code) ON DELETE SET NULL ON UPDATE CASCADE,
+        FULLTEXT(first_name,last_name)
+        );
+                        
+        """
+        )
