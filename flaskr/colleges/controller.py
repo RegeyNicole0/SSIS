@@ -13,8 +13,14 @@ def index():
 
 @colleges_view.route('/colleges', methods=['GET'])
 def colleges():
-    colleges = Colleges.query_all()
-    return render_template('colleges/colleges.html', colleges=colleges)
+    query = request.args.get('query', '')
+    if query.strip() == '':
+        colleges = Colleges.query_all()
+    else:
+        colleges = Colleges.query_filter(all=query, search_exact=False)
+    
+    print(query)
+    return render_template('colleges/colleges.html', colleges=colleges, query=query)
 
 @colleges_view.route('/colleges/add', methods=['GET','POST'])
 def add_college():  
@@ -53,6 +59,7 @@ def add_college():
         return redirect('/colleges')
     return render_template('colleges/add-colleges.html', form=form)
 
+
 @colleges_view.route('/colleges/delete', methods=['POST'])
 def delete_college():
     if request.method == 'POST':
@@ -62,6 +69,7 @@ def delete_college():
         mysql.connection.commit()
         flash(f'Successfully Deleted {college["college_code"]} - {college["college_name"]}', category='success')
         return redirect('/colleges')
+
 
 @colleges_view.route('/colleges/edit/<id>', methods=['GET','POST'])
 def edit_college(id):

@@ -45,10 +45,10 @@ class Colleges():
 
 
     @classmethod
-    def query_filter(cls, college_code=None, college_name=None, all=None, search_pattern=False):
+    def query_filter(cls, college_code=None, college_name=None, all=None, search_exact=False):
         cursor = mysql.connection.cursor()
         sql =''
-        if not search_pattern:
+        if search_exact:
             if college_name:
                 sql = f"SELECT * FROM colleges where college_name='{college_name}'"
             if college_code:
