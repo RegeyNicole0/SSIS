@@ -65,7 +65,11 @@
 
     {% for student in students %}
       <tr >
-        <td>{{student.profile_pic}}</td>
+        {% if not student.profile_pic%}
+        <td><img src="../../static/img/default.png" alt="" style="height:40px; width:40px;"></td>
+        {%else%}
+        <td><img src="{{student.profile_pic}}" alt="" style="height:40px; width:40px;"></td>
+        {%endif%}
         <td>{{student.id}}</td>
         <td>{{student.last_name}}, {{student.first_name}}</td>
         <td>

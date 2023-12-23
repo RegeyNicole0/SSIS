@@ -12,6 +12,7 @@ flask = "==2.2.2"
 werkzeug = "==2.2.2"
 wtforms = "*"
 wtforms-validators = "*"
+cloudinary = "*"
 
 [dev-packages]
 

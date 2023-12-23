@@ -3,7 +3,7 @@
 {% block title %} Colleges {% endblock %}
 
 {%block content %}
-<form action="/students/add" method="POST">
+<form action="/students/add" method="POST" enctype="multipart/form-data">
   {{form.csrf_token}}
 
   <div class="mb-3">
@@ -44,7 +44,7 @@
 
   <div class="mb-3">
     {{form.profile_pic.label(class_="form-label")}}
-    {{form.profile_pic(class_="form-control")}}
+    {{form.profile_pic(class_="form-control", accept="image/*")}}
     {% if form.profile_pic.errors %}
     <ul class="errors form-text text-danger fw-bold">
     {% for error in form.profile_pic.errors %}

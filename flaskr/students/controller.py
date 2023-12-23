@@ -1,11 +1,24 @@
 from . import students_view
-from flask import Flask, redirect, render_template, request, flash, session
+from flask import Flask, redirect, render_template, request, flash, session, current_app
 from flaskr.courses.models import Courses
 from flaskr.colleges.models import Colleges
+from werkzeug.utils import secure_filename
 from .models import Students
 from .forms import AddStudent
 import json
 from flaskr import mysql
+from config import CLOUDINARY_API_CLOUD, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_API_CLOUD_FOLDER
+import cloudinary
+import cloudinary.uploader
+import time
+import os
+          
+cloudinary.config( 
+  cloud_name = CLOUDINARY_API_CLOUD, 
+  api_key = CLOUDINARY_API_KEY, 
+  api_secret = CLOUDINARY_API_SECRET,
+  secure = True
+)
 
 @students_view.route('/students', methods=['GET','POST'])
 def view_students():
@@ -45,11 +58,12 @@ def add_student():
         id_number = form.id.data
         first_name = form.first_name.data.title()
         last_name = form.last_name.data.title()
-        profile_pic = form.profile_pic.data
+        profile_pic = request.files['profile_pic']
         year_level = form.year.data
         gender = form.gender.data
         course_code = form.course.data
-
+        timestamp = time.time()
+        
         # validate if course code already exists
         id_exists = Students.query_get(id_number)
         invalid_input = False
@@ -68,6 +82,21 @@ def add_student():
 
         new_student.add()
         mysql.connection.commit()
+
+        #uploading profile picture
+        if profile_pic:
+            filename = secure_filename(profile_pic.filename)
+            profile_pic.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
+
+            profile_pic_path = os.path.join(current_app.config['UPLOAD_PATH'], filename)
+            img_upload = cloudinary.uploader.upload(profile_pic_path,
+                                                    folder= CLOUDINARY_API_CLOUD_FOLDER,
+                                                    public_id = f"{id_number}{timestamp}"
+                                                    )
+            img_url = img_upload['secure_url']
+            Students.update_pfp(id=id_number,url=img_url)
+            mysql.connection.commit()
+
         flash(f'Successfully added "{new_student.id} - {new_student.first_name} {new_student.last_name}"', category='success')
         return redirect('/students')
     
@@ -96,7 +125,7 @@ def edit_student(id):
         id_number = form.id.data
         first_name = form.first_name.data.title()
         last_name = form.last_name.data.title()
-        profile_pic = form.profile_pic.data
+        profile_pic = request.files['profile_pic']
         year_level = form.year.data
         gender = form.gender.data
         course_code = form.course.data
@@ -114,7 +143,6 @@ def edit_student(id):
         if invalid_input == True:
             flash(f'Invalid inputs, please check the fields.', category='error')
             return render_template('students/edit-students.html', form=form, student=student)
-
         
         Students.update(
             old_id=student['id'],
@@ -125,7 +153,21 @@ def edit_student(id):
             new_gender=gender,
             new_id=id_number
             )
+
         mysql.connection.commit()
+        timestamp = time.time()
+        if profile_pic:
+            filename = secure_filename(profile_pic.filename)
+            profile_pic.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
+
+            profile_pic_path = os.path.join(current_app.config['UPLOAD_PATH'], filename)
+            img_upload = cloudinary.uploader.upload(profile_pic_path,
+                                                    folder= CLOUDINARY_API_CLOUD_FOLDER,
+                                                    public_id = f"{id_number}{timestamp}"
+                                                    )
+            img_url = img_upload['secure_url']
+            Students.update_pfp(id=id_number,url=img_url)
+            mysql.connection.commit()
         flash(f'Successfully Edited {student["id"]} - {student["first_name"]} {student["last_name"]}"', category='success')
         return redirect('/students')
     
