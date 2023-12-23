@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %} Colleges {% endblock %}
+
+{%block content %}
+<h1>Edit College</h1>
+<form action="/courses/edit/{{course.course_code}}" method="POST">
+  {{form.csrf_token}}
+  <div class="mb-3">
+    <div>
+      <h6>Currently Editing:</h6>
+      <div>{{course.course_code}} - {{course.course_name}}
+        <div>{{college_origin.college_name}}</div>
+      </div>
+    </div>
+    <br>
+    {{form.course_code.label(class_="form-label")}}
+    {{form.course_code(class_="form-control")}}
+    {% if form.course_code.errors %}
+    <ul class="errors form-text text-danger fw-bold">
+    {% for error in form.course_code.errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </div>
+  <div class="mb-3">
+    {{form.course_name.label(class_="form-label")}}
+    {{form.course_name(class_="form-control")}}
+    {% if form.course_name.errors %}
+    <ul class="errors form-text text-danger fw-bold">
+    {% for error in form.course_name.errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </div>
+  <div class="mb-3">
+    {{form.college.label(class_="form-label")}}
+    {{form.college(class_="form-select")}}
+    {% if form.college.errors %}
+    <ul class="errors form-text text-danger fw-bold">
+    {% for error in form.college.errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{%endblock%}

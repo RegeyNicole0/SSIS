@@ -7,7 +7,11 @@
 <form action="/colleges/edit/{{edit_college_code}}" method="POST">
   {{form.csrf_token}}
   <div class="mb-3">
-    <input type="text" disabled placeholder="{{edit_college_code}} - {{edit_college_name}}" class="form-control">
+    <div>
+      <h6>Currently Editing:</h6>
+      <div>{{college.college_code}} - {{college.college_name}}</div>
+    </div>
+    <br>
     {{form.college_code.label(class_="form-label")}}
     {{form.college_code(class_="form-control")}}
     {% if form.college_code.errors %}

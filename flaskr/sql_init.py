@@ -22,6 +22,15 @@ def create_db():
             PRIMARY KEY(college_code),
             UNIQUE(college_name)
         );
+
+        CREATE TABLE courses (
+        course_code 		VARCHAR(20) NOT NULL,
+        course_name		 	VARCHAR(100) NOT NULL,
+        college_code		VARCHAR(20),
+        PRIMARY KEY(course_code),
+        UNIQUE(course_name),
+        FOREIGN KEY(college_code) REFERENCES colleges(college_code) ON DELETE SET NULL ON UPDATE CASCADE
+        );
                      
     """
     )

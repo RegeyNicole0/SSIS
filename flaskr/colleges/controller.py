@@ -106,5 +106,6 @@ def edit_college(id):
         mysql.connection.commit()
         flash(f'Successfully edited "{target_college_code} - {target_college_name}" to "{new_college_code} - {new_college_name}"', category='success')
         return redirect('/colleges')
-        
-    return render_template('colleges/edit-colleges.html', edit_college_code=college['college_code'], edit_college_name=college['college_name'], form=form)
+    form.college_code.data = college['college_code']
+    form.college_name.data = college['college_name']
+    return render_template('colleges/edit-colleges.html', college=college, form=form)

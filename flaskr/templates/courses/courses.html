@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %} Colleges {% endblock %}
+
+{%block content %}
+
+
+<a type="button" class="btn btn-success" href="/courses/add">Add Courses + </a>
+<a type="button" href="/courses"><i class="bi bi-arrow-clockwise" style="height: 100px; width:100px;"></i></a>
+{% if courses|length < 1 %}
+<h1>No Courses Found</h1>
+{% else %}
+
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <form class="d-flex" role="search" action="/courses" method="GET">
+      <input class="form-control me-2" type="search" placeholder="Search Code or Name" aria-label="Search" name="query" value="{{query}}">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+<table class="table table-hover ">
+  <thead>
+    <tr>
+      <th scope="col">Course Code</th>
+      <th scope="col">Course Name</th>
+      <th scope="col">College</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for course in courses %}
+      <tr >
+        <td>{{course.course_code}}</td>
+        <td>{{course.course_name}}</td>
+        <td>{{course.college_name}}</td>
+        <td >
+          <a type="button" class="btn btn-warning btn-sm" href="/courses/edit/{{course.course_code}}">Edit</a>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{course.course_code}}">Delete</button>
+        </td>
+      </tr>
+
+      <!-- CONFIRM DELETE MODAL -->
+      <div class="modal" tabindex="-1" id="deleteModal{{course.course_code}}">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Confirm Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Delete {{course.course_code}} - {{course.course_name}}?</p>
+            </div>
+            <div class="modal-footer">
+              <form action="/courses/delete" method="post">
+                <input type="hidden" value="{{course.course_code}}" name="course-code">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+
+{%endblock%}
