@@ -134,7 +134,7 @@
     })
 
     filtered_courses = filtered_courses.filter((val) => val != undefined)
-    if ((selected_college_code == 'None') || (selected_college_code == undefined)) {
+    if ((selected_college_code == 'None') || (selected_college_code == undefined) || (filtered_courses.length === 0)) {
       filtered_courses = [{code:'None', name:'All Courses'}].concat(filtered_courses)
     }
   

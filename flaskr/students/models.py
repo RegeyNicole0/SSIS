@@ -71,7 +71,7 @@ class Students():
             if gender:
                 conditions.append(f"students.gender = '{gender}'")
             if all:
-                conditions.append(f"(students.id LIKE '%{all}%' or MATCH(students.last_name, students.first_name) AGAINST('{all}'))")
+                conditions.append(f"(students.id LIKE '%{all}%' or (MATCH(students.last_name, students.first_name) AGAINST('{all}')) or students.last_name LIKE '%{all}%' or students.first_name LIKE '%{all}%')")
         print(conditions)
         if conditions:
             sql += " WHERE " + " AND ".join(conditions)
