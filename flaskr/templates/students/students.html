@@ -23,6 +23,7 @@
       <select class="form-select" aria-label="Default select example" onchange="" name="course-filter" id="course-filter">
         <option value="None" {% if college_filter == 'None' %} selected {% endif %}>All Courses</option>
         {% for choice in course_choices%}
+          <option value="None" {% if college_filter == 'None' %} selected {% endif %}>All Courses</option>
           <option value="{{choice[0]}}" {% if choice[0] == course_filter %}selected{%endif%}>{{choice[1]}}</option>
         {%endfor%}
       </select>
@@ -134,9 +135,8 @@
     })
 
     filtered_courses = filtered_courses.filter((val) => val != undefined)
-    if ((selected_college_code == 'None') || (selected_college_code == undefined) || (filtered_courses.length === 0)) {
-      filtered_courses = [{code:'None', name:'All Courses'}].concat(filtered_courses)
-    }
+    filtered_courses = [{code:'None', name:'All Courses'}].concat(filtered_courses)
+    
   
     $('#course-filter').empty();
     for (let i = 0; i < filtered_courses.length; i++) {

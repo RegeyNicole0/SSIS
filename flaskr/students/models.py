@@ -4,7 +4,7 @@ from flaskr import mysql
 class Students():
     base_select = 'SELECT students.first_name, students.last_name,\
             students.gender, students.year_level, students.profile_pic,\
-            students.id, students.course_code, courses.course_name \
+            students.id, students.course_code, courses.course_name, courses.college_code \
             FROM students LEFT JOIN courses ON students.course_code=courses.course_code'
 
     def __init__(self, id=None,last_name=None, first_name=None, year=None,gender=None, profile_pic=None, course_code=None):
@@ -53,7 +53,7 @@ class Students():
 
 
     @classmethod
-    def query_filter(cls, gender=None, id=None, name=None, course=None, all=None, exact_match=False, year_level = None):
+    def query_filter(cls, gender=None, id=None, name=None, course=None, all=None, exact_match=False, year_level = None, college=None):
         cursor = mysql.connection.cursor()
         sql = cls.base_select
         conditions = []
@@ -72,6 +72,8 @@ class Students():
                 conditions.append(f"students.gender = '{gender}'")
             if all:
                 conditions.append(f"(students.id LIKE '%{all}%' or (MATCH(students.last_name, students.first_name) AGAINST('{all}')) or students.last_name LIKE '%{all}%' or students.first_name LIKE '%{all}%')")
+            if college:
+                conditions.append(f"courses.college_code = '{college}'")
         print(conditions)
         if conditions:
             sql += " WHERE " + " AND ".join(conditions)

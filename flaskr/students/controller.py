@@ -38,9 +38,9 @@ def view_students():
     gender_filter = request.args.get('gender-filter') if request.args.get('gender-filter') != 'None' else None
     year_filter = request.args.get('year-filter')  if request.args.get('year-filter') != 'None' else None
 
-    students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter)
+    students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter, college=college_filter)
     if (query and query.strip() != '') or query == None:
-        students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter)
+        students = Students.query_filter(all=query, course=course_filter, gender=gender_filter, year_level=year_filter, college=college_filter)
 
     query = '' if not query else query
     return render_template('students/students.html', students=students, course_choices=courses, college_choices=colleges, college_filter=college_filter, course_filter=course_filter, gender_filter=gender_filter, year_filter=year_filter, query=query, college_codes=college_codes)
