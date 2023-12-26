@@ -3,6 +3,7 @@ from flask import Flask, redirect, render_template, request, flash, session, cur
 from flaskr.courses.models import Courses
 from flaskr.colleges.models import Colleges
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import CombinedMultiDict
 from .models import Students
 from .forms import AddStudent
 import json
@@ -47,7 +48,7 @@ def view_students():
 
 @students_view.route('/students/add', methods=['GET','POST'])
 def add_student():  
-    form = AddStudent(request.form)
+    form = AddStudent(CombinedMultiDict((request.files, request.form)))
     courses = Courses.query_all()
     courses = [(course['course_code'],course['course_name']) for course in courses]
     session['course_choices'] = courses
@@ -84,7 +85,7 @@ def add_student():
         mysql.connection.commit()
 
         #uploading profile picture
-        if profile_pic:
+        if profile_pic and not invalid_input:
             filename = secure_filename(profile_pic.filename)
             profile_pic.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
 
@@ -114,7 +115,7 @@ def delete_student():
     
 @students_view.route('/students/edit/<id>', methods=['GET','POST'])
 def edit_student(id):  
-    form = AddStudent(request.form)
+    form = AddStudent(CombinedMultiDict((request.files, request.form)))
     student =  Students.query_get(id)
     courses = Courses.query_all()
     courses = [(course['course_code'],course['course_name']) for course in courses]
@@ -156,7 +157,7 @@ def edit_student(id):
 
         mysql.connection.commit()
         timestamp = time.time()
-        if profile_pic:
+        if profile_pic and not invalid_input:
             filename = secure_filename(profile_pic.filename)
             profile_pic.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
 
